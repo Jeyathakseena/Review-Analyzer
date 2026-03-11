@@ -1,4 +1,4 @@
-# 🔮 Review Analysis System
+#  Review Analysis System
 
 A Streamlit-based web app that processes bulk customer reviews, runs sentiment analysis, and delivers visual reports via email.
 

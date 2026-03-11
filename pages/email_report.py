@@ -11,10 +11,7 @@ def show():
     </div>
     """, unsafe_allow_html=True)
 
-    st.info(
-        "ℹ️ To enable email sending, set the **EMAIL_SENDER** and **EMAIL_PASSWORD** "
-        "environment variables before running the app."
-    )
+    
 
     email = st.text_input("Recipient Email Address", placeholder="example@gmail.com")
 

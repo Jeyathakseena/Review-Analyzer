@@ -1,4 +1,4 @@
-#  Review Analysis System
+# Review Analysis System
 
 A Streamlit-based web app that processes bulk customer reviews, runs sentiment analysis, and delivers visual reports via email.
 
@@ -20,7 +20,9 @@ A Streamlit-based web app that processes bulk customer reviews, runs sentiment a
 - [plotly](https://plotly.com/python/) — charts
 - Python `smtplib` — email delivery
 
+## Project Structure
 
+```text
 📦 project_root
  ┣ 📂 database
  ┃ ┣ 📜 __init__.py

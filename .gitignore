@@ -7,3 +7,7 @@ reports/
 *.pdf
 *.png
 .streamlit/secrets.toml
+# Databases
+*.db
+*.sqlite3
+database/system_data.db

@@ -4,31 +4,23 @@ import re
 import io
 import pandas as pd
 from email.message import EmailMessage
-
+from database.db_manager import load_top_reviews
 
 def is_valid_email(email: str) -> bool:
     pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     return bool(re.match(pattern, email))
-
 
 def send_email(
     receiver: str,
     filepath: str = None,
     pdf_path: str = None,
     report_path: str = None,
-    summary: str = None,       # accepted but unused — prevents kwargs errors
-    **kwargs,                  # absorbs any other unexpected keyword arguments
+    summary: str = None,       
+    **kwargs,                  
 ) -> tuple[bool, str]:
     """
     Send the PDF report + top 20,000 rows CSV to `receiver`.
     Returns (success: bool, message: str).
-
-    Accepts the PDF path as any of:
-        filepath, pdf_path, report_path  (positional or keyword)
-
-    Credentials from environment variables:
-        EMAIL_SENDER   – your Gmail address
-        EMAIL_PASSWORD – your Gmail app password
     """
     resolved_path = filepath or pdf_path or report_path
 
@@ -70,15 +62,11 @@ def send_email(
             filename="review_report.pdf",
         )
 
-        # ── Attach CSV (top 20,000 reviews by score) ──────────
-        csv_path = "data/analyzed_reviews.csv"
-        if os.path.exists(csv_path):
-            df = pd.read_csv(csv_path)
-            top_df = (
-                df.sort_values("Score", ascending=False)
-                  .head(20000)
-                  .reset_index(drop=True)
-            )
+       # ── Attach CSV (top 20,000 reviews by score) ──────────
+        # Pulling the pre-sorted top 20k directly from the database
+        top_df = load_top_reviews(20000)
+        
+        if not top_df.empty:
             csv_buffer = io.StringIO()
             top_df.to_csv(csv_buffer, index=False)
             csv_bytes = csv_buffer.getvalue().encode("utf-8")

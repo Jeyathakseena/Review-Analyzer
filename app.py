@@ -1,6 +1,10 @@
 from dotenv import load_dotenv
 load_dotenv()
 import streamlit as st
+from database.db_manager import init_db
+
+# Initialize the database and tables on startup
+init_db()
 
 st.set_page_config(
     page_title="Review Analysis System",
@@ -350,7 +354,7 @@ section_descriptions = {
     " Upload Files":   "Upload CSV, TXT, XLSX, or DOCX files to begin processing.",
     " Run Analysis":   "Analyze reviews using the regex keyword sentiment engine.",
     " View Records":   "Browse, search, filter and download all processed reviews.",
-    " Analytics":      "Visualize sentiment distribution and trend charts.",
+    " Summary Dashboard":      "Visualize sentiment distribution and trend charts.",
     " Email Report":   "Generate a PDF report and send results via email.",
     " Clear Data":     "Permanently delete all stored reviews and analysis results.",
 }
@@ -378,8 +382,8 @@ elif key == "Run Analysis":
     from pages.analysis import show; show()
 elif key == "View Records":
     from pages.records import show; show()
-elif key == "Analytics":
-    from pages.analytics import show; show()
+elif key == "Summary Dashboard":
+    from pages.summary_dashboard import show; show()
 elif key == "Email Report":
     from pages.email_report import show; show()
 elif key == "Clear Data":

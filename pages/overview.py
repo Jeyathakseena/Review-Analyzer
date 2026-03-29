@@ -1,7 +1,5 @@
 import streamlit as st
-import pandas as pd
-import os
-
+from database.db_manager import load_raw_reviews, load_analyzed_reviews
 
 def show():
     st.markdown("""
@@ -10,8 +8,12 @@ def show():
     </div>
     """, unsafe_allow_html=True)
 
-    raw_exists      = os.path.exists("data/reviews.csv")
-    analyzed_exists = os.path.exists("data/analyzed_reviews.csv")
+    # --- NEW DATABASE LOGIC ---
+    raw_df = load_raw_reviews()
+    analyzed_df = load_analyzed_reviews()
+    
+    raw_exists = not raw_df.empty
+    analyzed_exists = not analyzed_df.empty
 
     # Status badges
     st.markdown(f"""
@@ -30,11 +32,10 @@ def show():
     """, unsafe_allow_html=True)
 
     if analyzed_exists:
-        df = pd.read_csv("data/analyzed_reviews.csv")
         col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total Reviews", len(df))
-        col2.metric("Positive", (df["Sentiment"] == "Positive").sum())
-        col3.metric("Negative", (df["Sentiment"] == "Negative").sum())
-        col4.metric("Neutral",  (df["Sentiment"] == "Neutral").sum())
+        col1.metric("Total Reviews", len(analyzed_df))
+        col2.metric("Positive", (analyzed_df["Sentiment"] == "Positive").sum())
+        col3.metric("Negative", (analyzed_df["Sentiment"] == "Negative").sum())
+        col4.metric("Neutral",  (analyzed_df["Sentiment"] == "Neutral").sum())
     else:
         st.info("ℹ️ No analysis data available yet. Upload reviews and run analysis to see metrics here.")

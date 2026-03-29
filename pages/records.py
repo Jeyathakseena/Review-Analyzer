@@ -1,7 +1,5 @@
 import streamlit as st
-import pandas as pd
-import os
-
+from database.db_manager import load_analyzed_reviews
 
 def show():
     st.markdown("""
@@ -10,11 +8,12 @@ def show():
     </div>
     """, unsafe_allow_html=True)
 
-    if not os.path.exists("data/analyzed_reviews.csv"):
+    # --- NEW DATABASE LOGIC ---
+    df = load_analyzed_reviews()
+
+    if df.empty:
         st.warning(" No analyzed data found. Please run analysis first.")
         return
-
-    df = pd.read_csv("data/analyzed_reviews.csv")
 
     col1, col2 = st.columns([3, 1])
 

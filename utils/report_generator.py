@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from fpdf import FPDF
 import plotly.express as px
-
+from database.db_manager import load_analyzed_reviews
 
 def sanitize(text: str) -> str:
     """Replace common Unicode characters that latin-1 can't encode."""
@@ -11,21 +11,22 @@ def sanitize(text: str) -> str:
         "\u201c": '"', "\u201d": '"',   # left/right double quotes
         "\u2013": "-", "\u2014": "--",  # en-dash, em-dash
         "\u2026": "...",                # ellipsis
-        "\u00e9": "e", "\u00e8": "e",  # accented e
-        "\u00e0": "a", "\u00e2": "a",  # accented a
-        "\u00f4": "o", "\u00fb": "u",  # accented o, u
+        "\u00e9": "e", "\u00e8": "e",   # accented e
+        "\u00e0": "a", "\u00e2": "a",   # accented a
+        "\u00f4": "o", "\u00fb": "u",   # accented o, u
     }
     for orig, replacement in replacements.items():
         text = text.replace(orig, replacement)
     # Fallback: drop any remaining non-latin-1 characters
     return text.encode("latin-1", errors="ignore").decode("latin-1")
 
-
 def generate_report():
-    if not os.path.exists("data/analyzed_reviews.csv"):
+    # --- NEW DATABASE LOGIC ---
+    df = load_analyzed_reviews()
+
+    if df.empty:
         return None
 
-    df = pd.read_csv("data/analyzed_reviews.csv")
     os.makedirs("reports", exist_ok=True)
 
     total     = len(df)

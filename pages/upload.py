@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
-import os
 from utils.file_loader import load_file
-
+from database.db_manager import save_raw_reviews
 
 def show():
     st.markdown("""
@@ -32,10 +31,14 @@ def show():
 
         if all_reviews:
             combined = pd.concat(all_reviews, ignore_index=True)
-            os.makedirs("data", exist_ok=True)
-            combined.to_csv("data/reviews.csv", index=False)
-            st.divider()
-            st.metric("Total Reviews Uploaded", len(combined))
-            st.info(" Files saved. Head to **Run Analysis** to process them.")
+            
+            # --- NEW DATABASE LOGIC ---
+            try:
+                save_raw_reviews(combined)
+                st.divider()
+                st.metric("Total Reviews Uploaded", len(combined))
+                st.info(" Files saved to database. Head to **Run Analysis** to process them.")
+            except Exception as e:
+                st.error(f" Database Error: {e}")
         else:
             st.error(" No valid review data could be extracted from the uploaded files.")

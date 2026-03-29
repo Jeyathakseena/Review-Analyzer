@@ -21,27 +21,33 @@ A Streamlit-based web app that processes bulk customer reviews, runs sentiment a
 - Python `smtplib` — email delivery
 
 
-
-## Project Structure
-```
-review_analyzer/
-├── app.py                  # Main entry point & navigation
-├── pages/
-│   ├── overview.py         # Dashboard summary
-│   ├── upload.py           # File upload
-│   ├── analysis.py         # Run sentiment analysis
-│   ├── records.py          # Browse records
-│   ├── analytics.py        # Charts & visualizations
-│   ├── email_report.py     # Email report page
-│   └── clear_data.py       # Clear all data
-├── utils/
-│   ├── sentiment_engine.py # Scoring logic
-│   ├── report_generator.py # PDF builder
-│   ├── email_sender.py     # Email delivery
-│   ├── file_loader.py      # File parsing
-│   └── keyword_lists.py    # Sentiment keywords
-├── data/                   # Generated at runtime (gitignored)
-├── reports/                # Generated at runtime (gitignored)
-└── requirements.txt
-```
-
+📦 project_root
+ ┣ 📂 database
+ ┃ ┣ 📜 __init__.py
+ ┃ ┣ 📜 db_manager.py
+ ┃ ┗ 📜 system_data.db
+ ┣ 📂 pages
+ ┃ ┣ 📜 __init__.py
+ ┃ ┣ 📜 analysis.py
+ ┃ ┣ 📜 clear_data.py
+ ┃ ┣ 📜 dashboard.py
+ ┃ ┣ 📜 email_report.py
+ ┃ ┣ 📜 overview.py
+ ┃ ┣ 📜 records.py
+ ┃ ┗ 📜 upload.py
+ ┣ 📂 reports
+ ┃ ┣ 📜 bar_chart.png
+ ┃ ┣ 📜 histogram.png
+ ┃ ┣ 📜 pie_chart.png
+ ┃ ┗ 📜 review_report.pdf
+ ┣ 📂 utils
+ ┃ ┣ 📜 __init__.py
+ ┃ ┣ 📜 email_sender.py
+ ┃ ┣ 📜 file_loader.py
+ ┃ ┣ 📜 keyword_lists.py
+ ┃ ┣ 📜 report_generator.py
+ ┃ ┗ 📜 sentiment_engine.py
+ ┣ 📜 .env
+ ┣ 📜 .gitignore
+ ┣ 📜 app.py
+ ┗ 📜 license.txt

@@ -1,6 +1,5 @@
 import streamlit as st
-import os
-
+from database.db_manager import clear_database
 
 def show():
     st.markdown("""
@@ -15,12 +14,9 @@ def show():
 
     if confirm:
         if st.button(" Delete All Data", type="primary"):
-            deleted = []
-            for path in ["data/reviews.csv", "data/analyzed_reviews.csv"]:
-                if os.path.exists(path):
-                    os.remove(path)
-                    deleted.append(path)
-            if deleted:
-                st.success(f" Deleted: {', '.join(deleted)}")
-            else:
-                st.info(" No data files found to delete.")
+            try:
+                # --- NEW DATABASE LOGIC ---
+                clear_database()
+                st.success(" All database records have been successfully deleted.")
+            except Exception as e:
+                st.error(f" Failed to clear database: {e}")

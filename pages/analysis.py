@@ -1,8 +1,7 @@
 import streamlit as st
 import pandas as pd
-import os
 from utils.sentiment_engine import analyze_dataframe
-
+from database.db_manager import load_raw_reviews, save_analyzed_reviews
 
 def show():
     st.markdown("""
@@ -11,15 +10,16 @@ def show():
     </div>
     """, unsafe_allow_html=True)
 
-    if not os.path.exists("data/reviews.csv"):
-        st.warning(" No data found. Please upload review files first.")
+    # --- NEW DATABASE LOGIC ---
+    df = load_raw_reviews()
+
+    if df.empty:
+        st.warning(" No data found in the database. Please upload review files first.")
         return
 
-    df = pd.read_csv("data/reviews.csv")
     st.info(f" **{len(df)} reviews** loaded and ready to analyze.")
 
     if st.button("▶  Start Analysis"):
-        # Ensure the Review column exists (file_loader now standardizes to 'Review')
         if "Review" not in df.columns:
             possible = ["review", "reviews", "text", "comment", "feedback"]
             matched = next((c for c in df.columns if c.lower() in possible), None)
@@ -31,14 +31,16 @@ def show():
         with st.spinner("Analyzing reviews — please wait..."):
             result_df = analyze_dataframe(df)
 
-        os.makedirs("data", exist_ok=True)
-        result_df.to_csv("data/analyzed_reviews.csv", index=False)
+        # --- NEW DATABASE LOGIC ---
+        try:
+            save_analyzed_reviews(result_df)
+            st.success(" Analysis complete and saved to database!")
 
-        st.success(" Analysis complete!")
-        
-
-        col1, col2, col3, col4 = st.columns(4)
-        col1.metric("Total",    len(result_df))
-        col2.metric("Positive", (result_df["Sentiment"] == "Positive").sum())
-        col3.metric("Negative", (result_df["Sentiment"] == "Negative").sum())
-        col4.metric("Neutral",  (result_df["Sentiment"] == "Neutral").sum())
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("Total",    len(result_df))
+            col2.metric("Positive", (result_df["Sentiment"] == "Positive").sum())
+            col3.metric("Negative", (result_df["Sentiment"] == "Negative").sum())
+            col4.metric("Neutral",  (result_df["Sentiment"] == "Neutral").sum())
+            
+        except Exception as e:
+            st.error(f" Failed to save analysis to database: {e}")
